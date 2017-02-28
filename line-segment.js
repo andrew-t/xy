@@ -17,6 +17,10 @@ class LineSegment {
 			this.p2.toString();
 	}
 
+	get start() { return this.p1; }
+	get end() { return this.p2; }
+	get finish() { return this.p2; }
+
 	crosses(line) {
 		const maxX1 = Math.max(this.p1.x, this.p2.x),
 			minX1 = Math.min(this.p1.x, this.p2.x),

@@ -28,6 +28,10 @@ class Vector {
 		return new Vector(this.x - v.x, this.y - v.y);
 	}
 
+	distanceTo(v) {
+		return this.minus(v).length;
+	}
+
 	dot(v) {
 		return this.x * v.x + this.y * v.y;
 	}
@@ -77,6 +81,13 @@ class Vector {
 		function round(n) {
 			return Math.round(n * 100) / 100;
 		}
+	}
+
+	static canvasMouseVector(canvas, e) {
+		const rect = canvas.getBoundingClientRect();
+		return new Vector(
+			(e.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+			(e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height);
 	}
 }
 
