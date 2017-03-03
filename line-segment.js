@@ -56,6 +56,54 @@ class LineSegment {
 		return true;
 	}
 
+	parametricTOfPoint(point) {
+		const v = this.asVector();
+		return point.minus(this.p1).dot(v) / v.dot(v);
+	}
+	atParametricT(t) {
+		return this.asVector().times(t).plus(this.p1);
+	}
+
+	intersectionWithCircle(circle) {
+		// from http://mathworld.wolfram.com/Circle-LineIntersection.html
+		// intersection of line through (x1,y1) and (x2,y2) and circle radius r at the origin
+		// dx = x2-x1; dy = y2-y1;
+		// dr = √(dx^2 + dy^2)
+		// D = determinant of thing
+		//   = x1.y2 - x2.y1
+		// =>
+		// x = (D.dy ± sign(dy)dx √(r^2.dr^2 - D^2)) / dr^2
+		// y = (-D.dx ± |dy| √(r^2.dr^2 - D^2)) / dr^2
+		//   = (-D.dx ± sign(dy)dy √(r^2.dr^2 - D^2)) / dr^2
+
+		// in vectors:
+		// d = p2 - p1
+		// dp = perpendicular of d
+		// intersection = (dp.D ± d.sign(dy)).√(r^2.(d.d) - D^2) ) / (d.d)
+
+		const d = this.asVector(),
+			p1 = this.p1.minus(circle.centre),
+			p2 = this.p2.minus(circle.centre),
+			D = p1.x * p2.y - p2.x * p1.y,
+			discriminant = circle.radius * circle.radius * d.dot(d) - D * D;
+
+		// Strictly, there *is* an intersection if D = 0
+		// but it is of zero measure so screw it.
+		if (discriminant <= 0)
+			return null;
+
+		// Note: I have no idea what "sign(dy)" is doing in there:
+		const a = new Vector(d.y, -d.x).times(D),
+			// b = d.times(Math.sqrt(discriminant)),
+			b = d.times(Math.sign(d.y) * Math.sqrt(discriminant)),
+			c = d.dot(d);
+
+		return new LineSegment(
+			a.minus(b).over(c).plus(circle.centre),
+			a.plus(b).over(c).plus(circle.centre)
+		);
+	}
+
 	_crossesFullLine(line) {
 		const l1 = line.p1.minus(this.p1),
 			l2 = line.p2.minus(this.p1),

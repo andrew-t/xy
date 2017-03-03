@@ -20,3 +20,5 @@ class Circle {
 		return this.centre.distanceTo(point) <= this.radius;
 	}
 }
+
+if (typeof module !== 'undefined') module.exports = Circle;

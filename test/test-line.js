@@ -1,4 +1,5 @@
 const LineSegment = require('../line-segment'),
+	Circle = require('../circle'),
 	Vector = require('../vector');
 
 const expect = require('chai').expect;
@@ -88,4 +89,42 @@ describe('line segment', () => {
 				.to.be.equal(result)
 		});
 	}
+});
+
+describe('line-circle intersection', () => {
+
+	it('should not intersect two things nowhere near each other', () => {
+		const res = new LineSegment(
+				new Vector(10, 30),
+				new Vector(20, 40))
+			.intersectionWithCircle(
+				new Circle(new Vector(100, 200), 50));
+		console.log((res || 'null').toString());
+		expect(res).not.to.be.ok;
+	});
+
+	it('should intersect two things that intersect', () => {
+		const res = new LineSegment(
+				new Vector(10, 30),
+				new Vector(20, 40))
+			.intersectionWithCircle(
+				new Circle(new Vector(15, 35), 5));
+			console.log((res || 'null').toString());
+		expect(res).to.be.ok;
+	});
+
+});
+
+describe('line segment projection', () => {
+
+	it('should work', () => {
+		// y = 2x + 5
+		const res = new LineSegment(
+				new Vector(10, 25),
+				new Vector(20, 45))
+			.parametricTOfPoint(
+				new Vector(17, 39));
+		expect(res).to.equal(0.7);
+	});
+
 });
